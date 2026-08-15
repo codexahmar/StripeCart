@@ -1,79 +1,160 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../services/stripe_service.dart';
+import '../../../../utils/constants.dart';
 import '../../../../utils/dummy_helper.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../../data/models/product_model.dart';
 import '../../base/controllers/base_controller.dart';
 
 class CartController extends GetxController {
-  // to hold the products in cart
   List<ProductModel> products = [];
+  double subtotal = 0.0;
+  double discount = 0.0;
+  double grandTotal = 0.0;
 
-  // to hold the total price of the cart products
-  var total = 0.0;
+  bool isPromoApplied = false;
+  String appliedPromoCode = '';
+  final TextEditingController promoTextController = TextEditingController();
 
   @override
   void onInit() {
-    getCartProducts();
     super.onInit();
+    getCartProducts();
   }
 
-  /// when the user press on purchase now button
-  onPurchaseNowPressed() async {
-    try {
-      await StripeService.instance.makePayment(
-        amount: total.round(),
-        currency: 'usd',
-        context: Get.context!,
-      );
-      // Clear the cart products after successful payment
-      for (var product in DummyHelper.products) {
-        product.quantity = 0; // Reset all quantities
-      }
-      getCartProducts(); // Refresh cart
-      update(); // Update the UI
-      // Only change screen and show success message if payment was successful
-      Get.find<BaseController>().changeScreen(0);
+  @override
+  void onClose() {
+    promoTextController.dispose();
+    super.onClose();
+  }
+
+  /// Get the cart products from the product list
+  void getCartProducts() {
+    products = DummyHelper.products.where((p) => (p.quantity ?? 0) > 0).toList();
+    _calculateTotals();
+    update();
+  }
+
+  void _calculateTotals() {
+    subtotal = products.fold<double>(
+      0,
+      (sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 0),
+    );
+
+    if (isPromoApplied && subtotal > 0) {
+      discount = subtotal * Constants.defaultPromoDiscount;
+    } else {
+      discount = 0.0;
+    }
+
+    grandTotal = (subtotal - discount).clamp(0.0, double.infinity);
+  }
+
+  /// Apply promo discount
+  void applyPromoCode() {
+    final inputCode = promoTextController.text.trim().toUpperCase();
+    if (inputCode == Constants.defaultPromoCode) {
+      isPromoApplied = true;
+      appliedPromoCode = inputCode;
+      _calculateTotals();
+      update();
       CustomSnackBar.showCustomSnackBar(
-        title: 'Purchased',
-        message: 'Order placed with success',
+        title: 'Promo Applied! 🎉',
+        message: '20% discount applied to your order total.',
       );
-    } catch (e) {
-      // Payment error will be handled by StripeService
-      print('Payment failed: $e');
+    } else {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Invalid Code',
+        message: 'Try using code "INSTA20" for 20% off!',
+      );
     }
   }
 
-  /// when the user press on increase button
-  onIncreasePressed(int productId) {
+  void removePromoCode() {
+    isPromoApplied = false;
+    appliedPromoCode = '';
+    promoTextController.clear();
+    _calculateTotals();
+    update();
+  }
+
+  /// When the user presses the increase button
+  void onIncreasePressed(int productId) {
     var product = DummyHelper.products.firstWhere((p) => p.id == productId);
-    product.quantity = product.quantity! + 1;
+    product.quantity = (product.quantity ?? 0) + 1;
     getCartProducts();
+    try {
+      Get.find<BaseController>().refreshCartBadge();
+    } catch (_) {}
     update(['ProductQuantity']);
   }
 
-  /// when the user press on decrease button
-  onDecreasePressed(int productId) {
+  /// When the user presses the decrease button
+  void onDecreasePressed(int productId) {
     var product = DummyHelper.products.firstWhere((p) => p.id == productId);
-    if (product.quantity != 0) {
-      product.quantity = product.quantity! - 1;
+    if ((product.quantity ?? 0) > 1) {
+      product.quantity = (product.quantity ?? 0) - 1;
       getCartProducts();
+      try {
+        Get.find<BaseController>().refreshCartBadge();
+      } catch (_) {}
       update(['ProductQuantity']);
+    } else {
+      onDeletePressed(productId);
     }
   }
 
-  /// when the user press on delete icon
-  onDeletePressed(int productId) {
+  /// When the user presses the delete icon
+  void onDeletePressed(int productId) {
     var product = DummyHelper.products.firstWhere((p) => p.id == productId);
     product.quantity = 0;
     getCartProducts();
+    try {
+      Get.find<BaseController>().refreshCartBadge();
+    } catch (_) {}
   }
 
-  /// get the cart products from the product list
-  getCartProducts() {
-    products = DummyHelper.products.where((p) => p.quantity! > 0).toList();
-    // calculate the total price
-    total = products.fold<double>(0, (p, c) => p + c.price! * c.quantity!);
-    update();
+  /// When the user presses the purchase now button
+  Future<void> onPurchaseNowPressed() async {
+    if (products.isEmpty) {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Empty Bag',
+        message: 'Please add items to your bag before checking out.',
+      );
+      return;
+    }
+
+    try {
+      final context = Get.context;
+      if (context != null) {
+        await StripeService.instance.makePayment(
+          amount: grandTotal.round(),
+          currency: 'usd',
+          context: context,
+        );
+      }
+
+      // Clear the cart products after successful payment
+      for (var product in DummyHelper.products) {
+        product.quantity = 0;
+      }
+      isPromoApplied = false;
+      appliedPromoCode = '';
+      promoTextController.clear();
+
+      getCartProducts();
+      try {
+        Get.find<BaseController>().refreshCartBadge();
+        Get.find<BaseController>().changeScreen(0);
+      } catch (_) {}
+
+      CustomSnackBar.showCustomSnackBar(
+        title: 'Order Confirmed! 🚀',
+        message: 'Your luxury drop is being prepared for express delivery.',
+      );
+    } catch (e) {
+      debugPrint('Payment error: $e');
+    }
   }
 }

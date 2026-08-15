@@ -6,93 +6,97 @@ import 'light_theme_colors.dart';
 import 'my_styles.dart';
 
 class MyTheme {
-  static getThemeData({required bool isLight}) {
+  static ThemeData getThemeData({required bool isLight}) {
+    final primary = isLight
+        ? LightThemeColors.primaryColor
+        : DarkThemeColors.primaryColor;
+    final secondary = isLight
+        ? LightThemeColors.secondaryColor
+        : DarkThemeColors.secondaryColor;
+    final surface = isLight
+        ? LightThemeColors.surfaceColor
+        : DarkThemeColors.surfaceColor;
+    final scaffoldBg = isLight
+        ? LightThemeColors.scaffoldBackgroundColor
+        : DarkThemeColors.scaffoldBackgroundColor;
+    final cardBg = isLight
+        ? LightThemeColors.cardColor
+        : DarkThemeColors.cardColor;
+
     return ThemeData(
       useMaterial3: true,
-      // main color (app bar,tabs..etc)
-      primaryColor:
-          isLight
-              ? LightThemeColors.primaryColor
-              : DarkThemeColors.primaryColor,
-      // secondary color (for checkbox,float button, radio..etc)
-      // secondary & background color
-      colorScheme: ColorScheme.fromSwatch(
-        accentColor:
-            isLight
-                ? LightThemeColors.accentColor
-                : DarkThemeColors.accentColor,
-        backgroundColor:
-            isLight
-                ? LightThemeColors.backgroundColor
-                : DarkThemeColors.backgroundColor,
-        brightness: isLight ? Brightness.light : Brightness.dark,
-      ).copyWith(
-        secondary:
-            isLight
-                ? LightThemeColors.accentColor
-                : DarkThemeColors.accentColor,
-      ),
-      // color contrast (if the theme is dark text should be white for example)
       brightness: isLight ? Brightness.light : Brightness.dark,
-      // card widget background color
-      cardColor:
-          isLight ? LightThemeColors.cardColor : DarkThemeColors.cardColor,
-      // hint text color
-      hintColor:
-          isLight
-              ? LightThemeColors.hintTextColor
-              : DarkThemeColors.hintTextColor,
-      // divider color
+      primaryColor: primary,
+      scaffoldBackgroundColor: scaffoldBg,
+      cardColor: cardBg,
+      hintColor: isLight
+          ? LightThemeColors.hintTextColor
+          : DarkThemeColors.hintTextColor,
+
+      colorScheme: ColorScheme(
+        brightness: isLight ? Brightness.light : Brightness.dark,
+        primary: primary,
+        onPrimary: Colors.white,
+        secondary: secondary,
+        onSecondary: Colors.white,
+        error: const Color(0xFFEF4444),
+        onError: Colors.white,
+        surface: surface,
+        onSurface: isLight
+            ? LightThemeColors.displayTextColor
+            : DarkThemeColors.displayTextColor,
+      ),
+
+      // Card theme
+      cardTheme: CardThemeData(
+        color: cardBg,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+
+      // Divider theme
       dividerTheme: DividerThemeData(
-        color:
-            isLight
-                ? LightThemeColors.dividerColor
-                : DarkThemeColors.dividerColor,
+        color: isLight
+            ? LightThemeColors.dividerColor
+            : DarkThemeColors.dividerColor,
+        thickness: 1,
+        space: 1,
       ),
-      // app background color
-      scaffoldBackgroundColor:
-          isLight
-              ? LightThemeColors.scaffoldBackgroundColor
-              : DarkThemeColors.scaffoldBackgroundColor,
 
-      // progress bar theme
+      // Progress bar theme
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color:
-            isLight
-                ? LightThemeColors.primaryColor
-                : DarkThemeColors.primaryColor,
+        color: primary,
       ),
 
-      // appBar theme
+      // AppBar theme
       appBarTheme: MyStyles.getAppBarTheme(isLightTheme: isLight),
 
-      // elevated button theme
+      // ElevatedButton theme
       elevatedButtonTheme: MyStyles.getElevatedButtonTheme(
         isLightTheme: isLight,
       ),
 
-      // text theme
+      // Text theme
       textTheme: MyStyles.getTextTheme(isLightTheme: isLight),
 
-      // chip theme
+      // Chip theme
       chipTheme: MyStyles.getChipTheme(isLightTheme: isLight),
 
-      // icon theme
+      // Icon theme
       iconTheme: MyStyles.getIconTheme(isLightTheme: isLight),
     );
   }
 
-  /// update app theme and save theme type to shared pref
-  /// (so when the app is killed and up again theme will remain the same)
-  static changeTheme() {
-    // *) check if the current theme is light (default is light)
+  /// Update app theme and save theme type to shared pref
+  static void changeTheme() {
     bool isLightTheme = MySharedPref.getThemeIsLight();
-    // *) store the new theme mode on get storage
     MySharedPref.setThemeIsLight(!isLightTheme);
-    // *) let GetX change theme
+    Get.changeTheme(getThemeData(isLight: !isLightTheme));
     Get.changeThemeMode(!isLightTheme ? ThemeMode.light : ThemeMode.dark);
   }
 
-  /// check if the theme is light or dark
-  bool get getThemeIsLight => MySharedPref.getThemeIsLight();
+  /// Check if the theme is light or dark
+  static bool get isThemeLight => MySharedPref.getThemeIsLight();
 }

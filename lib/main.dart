@@ -6,10 +6,10 @@ import 'app/routes/app_pages.dart';
 import 'config/theme/my_theme.dart';
 
 Future<void> main() async {
-  // wait for bindings
+  // Wait for flutter bindings
   WidgetsFlutterBinding.ensureInitialized();
 
-  // init shared preference
+  // Init shared preferences
   await MySharedPref.init();
 
   runApp(
@@ -17,26 +17,25 @@ Future<void> main() async {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
+        bool themeIsLight = MySharedPref.getThemeIsLight();
         return GetMaterialApp(
-          title: "E-commerce App",
-          useInheritedMediaQuery: true,
+          title: "StripeCart",
           debugShowCheckedModeBanner: false,
+          theme: MyTheme.getThemeData(isLight: true),
+          darkTheme: MyTheme.getThemeData(isLight: false),
+          themeMode: themeIsLight ? ThemeMode.light : ThemeMode.dark,
           builder: (context, widget) {
-            bool themeIsLight = MySharedPref.getThemeIsLight();
-            return Theme(
-              data: MyTheme.getThemeData(isLight: themeIsLight),
-              child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                child: widget!,
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: const TextScaler.linear(1.0),
               ),
+              child: widget!,
             );
           },
-          initialRoute:
-              AppPages.INITIAL, // first screen to show when app is running
-          getPages: AppPages.routes, // app screens
+          initialRoute: AppPages.INITIAL,
+          getPages: AppPages.routes,
         );
       },
     ),

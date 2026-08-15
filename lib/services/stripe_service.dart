@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import '../app/components/custom_snackbar.dart';
 import '../utils/constants.dart';
 
 class StripeService {
@@ -12,10 +13,12 @@ class StripeService {
   /// Initialize Stripe with the publishable key
   Future<void> initStripe() async {
     if (_isStripeInitialized) return;
-    Stripe.publishableKey = Constants.stripePublishableKey;
-    await Stripe.instance.applySettings();
-    _isStripeInitialized = true;
-    debugPrint("Stripe initialized");
+    if (Constants.stripePublishableKey.isNotEmpty) {
+      Stripe.publishableKey = Constants.stripePublishableKey;
+      await Stripe.instance.applySettings();
+      _isStripeInitialized = true;
+      debugPrint("Stripe initialized");
+    }
   }
 
   /// Entry point to make a payment
@@ -24,6 +27,15 @@ class StripeService {
     required String currency,
     required BuildContext context,
   }) async {
+    // If keys are empty, simulate successful demo payment for Insta video showcase
+    if (Constants.stripeSecretKey.isEmpty ||
+        Constants.stripePublishableKey.isEmpty) {
+      debugPrint("Demo mode: simulating Stripe Payment Sheet presentation");
+      await Future.delayed(const Duration(milliseconds: 800));
+      handlePaymentSuccess();
+      return;
+    }
+
     try {
       await initStripe();
 
@@ -38,7 +50,7 @@ class StripeService {
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           style: ThemeMode.dark,
-          merchantDisplayName: 'Codex Ahmar',
+          merchantDisplayName: 'Codex Ahmar - StripeCart',
         ),
       );
 
@@ -46,9 +58,9 @@ class StripeService {
       await Stripe.instance.presentPaymentSheet();
 
       // 4. Handle success
-      handlePaymentSuccess(context);
+      handlePaymentSuccess();
     } catch (e) {
-      handlePaymentError(e, context);
+      handlePaymentError(e);
     }
   }
 
@@ -77,13 +89,13 @@ class StripeService {
       );
 
       if (response.data != null && response.data['client_secret'] != null) {
-        print('Payment Intent Created: ${response.data}');
+        debugPrint('Payment Intent Created: ${response.data}');
         return response.data['client_secret'];
       }
 
       return null;
     } catch (e) {
-      print('Error creating PaymentIntent: $e');
+      debugPrint('Error creating PaymentIntent: $e');
       return null;
     }
   }
@@ -95,26 +107,27 @@ class StripeService {
   }
 
   /// Handle successful payment
-  void handlePaymentSuccess(BuildContext context) {
-    print("Payment successful!");
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Payment Successful')));
+  void handlePaymentSuccess() {
+    debugPrint("Payment successful!");
+    CustomSnackBar.showCustomSnackBar(
+      title: 'Payment Successful! 🎉',
+      message: 'Thank you for your purchase. Order confirmed.',
+    );
   }
 
   /// Handle payment failure or cancellation
-  void handlePaymentError(dynamic error, BuildContext context) {
+  void handlePaymentError(dynamic error) {
     if (error is StripeException) {
-      print("StripeException: ${error.error.localizedMessage}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Stripe error: ${error.error.localizedMessage}"),
-        ),
+      debugPrint("StripeException: ${error.error.localizedMessage}");
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Payment Incomplete',
+        message: error.error.localizedMessage ?? 'Transaction cancelled.',
       );
     } else {
-      print("Unexpected error: $error");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Payment failed. Please try again.")),
+      debugPrint("Unexpected error: $error");
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Payment Notice',
+        message: 'Could not process transaction. Please try again.',
       );
     }
   }

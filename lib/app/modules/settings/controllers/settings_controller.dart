@@ -1,18 +1,12 @@
 import 'package:get/get.dart';
-
 import '../../../../config/theme/my_theme.dart';
 import '../../../data/local/my_shared_pref.dart';
 
 class SettingsController extends GetxController {
+  bool get isLightTheme => MySharedPref.getThemeIsLight();
 
-  // get is light theme from shared pref
-  var isLightTheme = MySharedPref.getThemeIsLight();
-
-  /// change the system theme
-  changeTheme(bool value) {
+  void changeTheme(bool isDark) {
     MyTheme.changeTheme();
-    isLightTheme = MySharedPref.getThemeIsLight();
     update(['Theme']);
   }
-
 }

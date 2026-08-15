@@ -1,22 +1,41 @@
 import 'package:get/get.dart';
-
 import '../../../../utils/dummy_helper.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../../data/models/product_model.dart';
+import '../../base/controllers/base_controller.dart';
+import '../../cart/controllers/cart_controller.dart';
 
 class FavoritesController extends GetxController {
-
-  // to hold the favorite products
   List<ProductModel> products = [];
-  
+
   @override
   void onInit() {
-    getFavoriteProducts();
     super.onInit();
+    getFavoriteProducts();
   }
 
-  /// get the favorite products from the product list
-  getFavoriteProducts() {
-    products = DummyHelper.products.where((product) => product.isFavorite!).toList();
+  void getFavoriteProducts() {
+    products =
+        DummyHelper.products.where((p) => p.isFavorite == true).toList();
     update();
+  }
+
+  void addAllToCart() {
+    if (products.isEmpty) return;
+
+    for (var product in products) {
+      product.quantity = (product.quantity ?? 0) + 1;
+      product.size ??= 'M';
+    }
+
+    try {
+      Get.find<CartController>().getCartProducts();
+      Get.find<BaseController>().refreshCartBadge();
+    } catch (_) {}
+
+    CustomSnackBar.showCustomSnackBar(
+      title: 'Added All to Bag 🎉',
+      message: '${products.length} wishlist items moved to your shopping bag.',
+    );
   }
 }

@@ -1,7 +1,8 @@
 class Constants {
-  // assets images
+  // Assets images
   static const logo = 'assets/images/app_icon.png';
 
+  // Vectors / SVGs
   static const homeIcon = 'assets/vectors/home.svg';
   static const favoritesIcon = 'assets/vectors/favorites.svg';
   static const cartIcon = 'assets/vectors/cart.svg';
@@ -22,6 +23,7 @@ class Constants {
   static const helpIcon = 'assets/vectors/help.svg';
   static const logoutIcon = 'assets/vectors/logout.svg';
 
+  // Product images
   static const product1 = 'assets/images/product1.png';
   static const product2 = 'assets/images/product2.png';
   static const product3 = 'assets/images/product3.png';
@@ -29,6 +31,22 @@ class Constants {
   static const product5 = 'assets/images/product5.png';
 
   static const noData = 'assets/images/no_data.png';
+
+  // Stripe Keys (placeholders for testing)
   static const String stripePublishableKey = "";
   static const String stripeSecretKey = "";
+
+  // Categories
+  static const List<String> categories = [
+    'All',
+    'Streetwear',
+    'Sneakers',
+    'Luxury',
+    'Hoodies',
+    'Accessories',
+  ];
+
+  // Default Promo
+  static const String defaultPromoCode = 'INSTA20';
+  static const double defaultPromoDiscount = 0.20; // 20%
 }
