@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'app/components/custom_snackbar.dart';
 import 'app/data/local/my_shared_pref.dart';
 import 'app/routes/app_pages.dart';
 import 'config/theme/my_theme.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
       builder: (context, widget) {
         bool themeIsLight = MySharedPref.getThemeIsLight();
         return GetMaterialApp(
+          scaffoldMessengerKey: CustomSnackBar.messengerKey,
           title: "StripeCart",
           debugShowCheckedModeBanner: false,
           theme: MyTheme.getThemeData(isLight: true),

@@ -460,43 +460,54 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
             ),
           ),
 
-          // Floating Top Navigation Bar
+          // Floating Top Navigation Bar (Wrapped in SafeArea)
           Positioned(
-            top: 40.h,
-            left: 20.w,
-            right: 20.w,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                RoundedButton(
-                  onPressed: () => Get.back(),
-                  child: SvgPicture.asset(
-                    Constants.backArrowIcon,
-                    width: 18.r,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
-                  ),
-                ),
-                GetBuilder<ProductDetailsController>(
-                  id: 'FavoriteButton',
-                  builder: (ctrl) {
-                    final isFav = ctrl.product.isFavorite ?? false;
-                    return RoundedButton(
-                      onPressed: ctrl.onFavoriteButtonPressed,
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RoundedButton(
+                      onPressed: () {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        } else {
+                          Get.back();
+                        }
+                      },
                       child: SvgPicture.asset(
-                        isFav
-                            ? Constants.favFilledIcon
-                            : Constants.favOutlinedIcon,
+                        Constants.backArrowIcon,
                         width: 18.r,
-                        color: isFav
-                            ? const Color(0xFFFF5376)
-                            : (isDark
-                                ? Colors.white
-                                : const Color(0xFF0F172A)),
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
-                    );
-                  },
+                    ),
+                    GetBuilder<ProductDetailsController>(
+                      id: 'FavoriteButton',
+                      builder: (ctrl) {
+                        final isFav = ctrl.product.isFavorite ?? false;
+                        return RoundedButton(
+                          onPressed: ctrl.onFavoriteButtonPressed,
+                          child: SvgPicture.asset(
+                            isFav
+                                ? Constants.favFilledIcon
+                                : Constants.favOutlinedIcon,
+                            width: 18.r,
+                            color: isFav
+                                ? const Color(0xFFFF5376)
+                                : (isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0F172A)),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
 

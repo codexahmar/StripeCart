@@ -3,36 +3,82 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class CustomSnackBar {
+  static final GlobalKey<ScaffoldMessengerState> messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   static void showCustomSnackBar({
     required String title,
     required String message,
     Duration? duration,
   }) {
-    Get.snackbar(
-      title,
-      message,
-      duration: duration ?? const Duration(seconds: 3),
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      borderRadius: 16.r,
-      colorText: Colors.white,
-      backgroundColor: const Color(0xFF10B981), // Emerald
-      icon: Container(
-        padding: EdgeInsets.all(6.r),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
-          shape: BoxShape.circle,
+    final messenger = messengerKey.currentState ??
+        (Get.context != null ? ScaffoldMessenger.maybeOf(Get.context!) : null);
+    if (messenger == null) return;
+
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        duration: duration ?? const Duration(seconds: 2),
+        content: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: const Color(0xFF10B981), // Emerald
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF10B981).withValues(alpha: 0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(6.r),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+              12.horizontalSpace,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    2.verticalSpace,
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 11.5.sp,
+                        color: Colors.white.withValues(alpha: 0.95),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        child: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
       ),
-      snackPosition: SnackPosition.TOP,
-      boxShadows: [
-        BoxShadow(
-          color: const Color(0xFF10B981).withValues(alpha: 0.4),
-          blurRadius: 16,
-          offset: const Offset(0, 6),
-        ),
-      ],
     );
   }
 
@@ -42,32 +88,75 @@ class CustomSnackBar {
     Color? color,
     Duration? duration,
   }) {
+    final messenger = messengerKey.currentState ??
+        (Get.context != null ? ScaffoldMessenger.maybeOf(Get.context!) : null);
+    if (messenger == null) return;
+
     final bgColor = color ?? const Color(0xFFEF4444);
-    Get.snackbar(
-      title,
-      message,
-      duration: duration ?? const Duration(seconds: 3),
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      borderRadius: 16.r,
-      colorText: Colors.white,
-      backgroundColor: bgColor,
-      icon: Container(
-        padding: EdgeInsets.all(6.r),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
-          shape: BoxShape.circle,
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        duration: duration ?? const Duration(seconds: 3),
+        content: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: bgColor.withValues(alpha: 0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(6.r),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+              12.horizontalSpace,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    2.verticalSpace,
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 11.5.sp,
+                        color: Colors.white.withValues(alpha: 0.95),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        child: const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
       ),
-      snackPosition: SnackPosition.TOP,
-      boxShadows: [
-        BoxShadow(
-          color: bgColor.withValues(alpha: 0.4),
-          blurRadius: 16,
-          offset: const Offset(0, 6),
-        ),
-      ],
     );
   }
 
@@ -77,15 +166,10 @@ class CustomSnackBar {
     Color? color,
     Duration? duration,
   }) {
-    Get.rawSnackbar(
-      title: title,
+    showCustomSnackBar(
+      title: title ?? 'Notification',
       message: message,
-      duration: duration ?? const Duration(seconds: 3),
-      snackStyle: SnackStyle.FLOATING,
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      borderRadius: 16.r,
-      backgroundColor: color ?? const Color(0xFF1E293B),
-      onTap: (_) => Get.closeAllSnackbars(),
+      duration: duration ?? const Duration(seconds: 2),
     );
   }
 
@@ -95,15 +179,11 @@ class CustomSnackBar {
     Color? color,
     Duration? duration,
   }) {
-    Get.rawSnackbar(
-      title: title,
+    showCustomErrorSnackBar(
+      title: title ?? 'Error',
       message: message,
-      duration: duration ?? const Duration(seconds: 3),
-      snackStyle: SnackStyle.FLOATING,
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      borderRadius: 16.r,
-      backgroundColor: color ?? const Color(0xFFEF4444),
-      onTap: (_) => Get.closeAllSnackbars(),
+      color: color,
+      duration: duration,
     );
   }
 }
