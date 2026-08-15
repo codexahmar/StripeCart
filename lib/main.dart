@@ -9,6 +9,8 @@ import 'config/theme/my_theme.dart';
 import 'services/stripe_service.dart';
 
 Future<void> main() async {
+  // Follow codexahmar
+
   // Wait for flutter bindings
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -42,9 +44,9 @@ Future<void> main() async {
           themeMode: themeIsLight ? ThemeMode.light : ThemeMode.dark,
           builder: (context, widget) {
             return MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: const TextScaler.linear(1.0),
-              ),
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: const TextScaler.linear(1.0)),
               child: widget!,
             );
           },
