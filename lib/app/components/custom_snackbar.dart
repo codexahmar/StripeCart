@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../data/local/my_shared_pref.dart';
 
 class CustomSnackBar {
   static final GlobalKey<ScaffoldMessengerState> messengerKey =
       GlobalKey<ScaffoldMessengerState>();
+
+  static bool _getIsDark() {
+    try {
+      if (Get.context != null) {
+        return Get.context!.theme.brightness == Brightness.dark;
+      }
+    } catch (_) {}
+    return !MySharedPref.getThemeIsLight();
+  }
 
   static void showCustomSnackBar({
     required String title,
@@ -15,6 +25,8 @@ class CustomSnackBar {
         (Get.context != null ? ScaffoldMessenger.maybeOf(Get.context!) : null);
     if (messenger == null) return;
 
+    final isDark = _getIsDark();
+
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
@@ -22,32 +34,46 @@ class CustomSnackBar {
         backgroundColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        duration: duration ?? const Duration(seconds: 2),
+        duration: duration ?? const Duration(seconds: 3),
         content: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: const Color(0xFF10B981), // Emerald
-            borderRadius: BorderRadius.circular(16.r),
+            color: isDark ? const Color(0xFF141C2E) : Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(
+              color: const Color(0xFF10B981).withValues(alpha: isDark ? 0.4 : 0.3),
+              width: 1.2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF10B981).withValues(alpha: 0.4),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.4)
+                    : const Color(0xFF64748B).withValues(alpha: 0.12),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: const Color(0xFF10B981).withValues(alpha: isDark ? 0.2 : 0.1),
+                blurRadius: 12,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(6.r),
+                width: 36.r,
+                height: 36.r,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: const Color(0xFF10B981).withValues(alpha: isDark ? 0.2 : 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  color: Colors.white,
-                  size: 18,
+                child: const Center(
+                  child: Icon(
+                    Icons.check_circle_rounded,
+                    color: Color(0xFF10B981),
+                    size: 20,
+                  ),
                 ),
               ),
               12.horizontalSpace,
@@ -59,9 +85,9 @@ class CustomSnackBar {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 13.5.sp,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
                     2.verticalSpace,
@@ -69,7 +95,10 @@ class CustomSnackBar {
                       message,
                       style: TextStyle(
                         fontSize: 11.5.sp,
-                        color: Colors.white.withValues(alpha: 0.95),
+                        fontWeight: FontWeight.w500,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF475569),
                       ),
                     ),
                   ],
@@ -92,7 +121,9 @@ class CustomSnackBar {
         (Get.context != null ? ScaffoldMessenger.maybeOf(Get.context!) : null);
     if (messenger == null) return;
 
-    final bgColor = color ?? const Color(0xFFEF4444);
+    final isDark = _getIsDark();
+    final accentColor = color ?? const Color(0xFFEF4444);
+
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
@@ -102,30 +133,44 @@ class CustomSnackBar {
         margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         duration: duration ?? const Duration(seconds: 3),
         content: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(16.r),
+            color: isDark ? const Color(0xFF141C2E) : Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(
+              color: accentColor.withValues(alpha: isDark ? 0.4 : 0.3),
+              width: 1.2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: bgColor.withValues(alpha: 0.4),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.4)
+                    : const Color(0xFF64748B).withValues(alpha: 0.12),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: accentColor.withValues(alpha: isDark ? 0.2 : 0.1),
+                blurRadius: 12,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(6.r),
+                width: 36.r,
+                height: 36.r,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: accentColor.withValues(alpha: isDark ? 0.2 : 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.error_outline_rounded,
-                  color: Colors.white,
-                  size: 18,
+                child: Center(
+                  child: Icon(
+                    Icons.error_outline_rounded,
+                    color: accentColor,
+                    size: 20,
+                  ),
                 ),
               ),
               12.horizontalSpace,
@@ -137,9 +182,9 @@ class CustomSnackBar {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 13.5.sp,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
                     2.verticalSpace,
@@ -147,7 +192,10 @@ class CustomSnackBar {
                       message,
                       style: TextStyle(
                         fontSize: 11.5.sp,
-                        color: Colors.white.withValues(alpha: 0.95),
+                        fontWeight: FontWeight.w500,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF475569),
                       ),
                     ),
                   ],
@@ -180,7 +228,7 @@ class CustomSnackBar {
     Duration? duration,
   }) {
     showCustomErrorSnackBar(
-      title: title ?? 'Error',
+      title: title ?? 'Notice',
       message: message,
       color: color,
       duration: duration,

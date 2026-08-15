@@ -33,10 +33,13 @@ dependencies:
   flutter_animate: ^4.0.0
 
   # Stripe payment integration
-  flutter_stripe: ^11.5.0
+  flutter_stripe: ^14.0.0
 
   # Dio for HTTP requests
   dio: ^5.8.0+1
+
+  # Environment variables loader
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +63,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/images/
     - assets/vectors/
     - assets/fonts/

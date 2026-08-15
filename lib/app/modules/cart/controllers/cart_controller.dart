@@ -15,6 +15,7 @@ class CartController extends GetxController {
 
   bool isPromoApplied = false;
   String appliedPromoCode = '';
+  bool isCheckingOut = false;
   final TextEditingController promoTextController = TextEditingController();
 
   @override
@@ -54,6 +55,14 @@ class CartController extends GetxController {
   /// Apply promo discount
   void applyPromoCode() {
     final inputCode = promoTextController.text.trim().toUpperCase();
+    if (inputCode.isEmpty) {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Empty Code',
+        message: 'Please enter a promo code (try ${Constants.defaultPromoCode})',
+      );
+      return;
+    }
+
     if (inputCode == Constants.defaultPromoCode) {
       isPromoApplied = true;
       appliedPromoCode = inputCode;
@@ -66,7 +75,7 @@ class CartController extends GetxController {
     } else {
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Invalid Code',
-        message: 'Try using code "INSTA20" for 20% off!',
+        message: 'Try using code "${Constants.defaultPromoCode}" for 20% off!',
       );
     }
   }
@@ -117,6 +126,7 @@ class CartController extends GetxController {
 
   /// When the user presses the purchase now button
   Future<void> onPurchaseNowPressed() async {
+    if (isCheckingOut) return;
     if (products.isEmpty) {
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Empty Bag',
@@ -125,36 +135,39 @@ class CartController extends GetxController {
       return;
     }
 
+    isCheckingOut = true;
+    update(['CheckoutButton']);
+
     try {
       final context = Get.context;
       if (context != null) {
-        await StripeService.instance.makePayment(
-          amount: grandTotal.round(),
+        final isSuccess = await StripeService.instance.makePayment(
+          amount: grandTotal,
           currency: 'usd',
           context: context,
         );
+
+        if (isSuccess) {
+          // Clear the cart products only after confirmed payment
+          for (var product in DummyHelper.products) {
+            product.quantity = 0;
+          }
+          isPromoApplied = false;
+          appliedPromoCode = '';
+          promoTextController.clear();
+
+          getCartProducts();
+          try {
+            Get.find<BaseController>().refreshCartBadge();
+            Get.find<BaseController>().changeScreen(0);
+          } catch (_) {}
+        }
       }
-
-      // Clear the cart products after successful payment
-      for (var product in DummyHelper.products) {
-        product.quantity = 0;
-      }
-      isPromoApplied = false;
-      appliedPromoCode = '';
-      promoTextController.clear();
-
-      getCartProducts();
-      try {
-        Get.find<BaseController>().refreshCartBadge();
-        Get.find<BaseController>().changeScreen(0);
-      } catch (_) {}
-
-      CustomSnackBar.showCustomSnackBar(
-        title: 'Order Confirmed! 🚀',
-        message: 'Your luxury drop is being prepared for express delivery.',
-      );
     } catch (e) {
       debugPrint('Payment error: $e');
+    } finally {
+      isCheckingOut = false;
+      update(['CheckoutButton']);
     }
   }
 }

@@ -10,70 +10,90 @@ class StripeService {
 
   bool _isStripeInitialized = false;
 
-  /// Initialize Stripe with the publishable key
+  /// Initialize Stripe with the publishable key loaded from .env
   Future<void> initStripe() async {
-    if (_isStripeInitialized) return;
-    if (Constants.stripePublishableKey.isNotEmpty) {
-      Stripe.publishableKey = Constants.stripePublishableKey;
+    final pubKey = Constants.stripePublishableKey;
+    if (pubKey.isNotEmpty && !_isStripeInitialized) {
+      Stripe.publishableKey = pubKey;
+      Stripe.merchantIdentifier = 'merchant.flutter.stripecart';
       await Stripe.instance.applySettings();
       _isStripeInitialized = true;
-      debugPrint("Stripe initialized");
+      debugPrint("Stripe initialized with key from .env: ${pubKey.substring(0, pubKey.length > 8 ? 8 : pubKey.length)}...");
     }
   }
 
-  /// Entry point to make a payment
-  Future<void> makePayment({
-    required int amount,
+  /// Entry point to make a payment. Returns true if successful, false otherwise.
+  Future<bool> makePayment({
+    required num amount,
     required String currency,
     required BuildContext context,
   }) async {
-    // If keys are empty, simulate successful demo payment for Insta video showcase
-    if (Constants.stripeSecretKey.isEmpty ||
-        Constants.stripePublishableKey.isEmpty) {
-      debugPrint("Demo mode: simulating Stripe Payment Sheet presentation");
+    final secretKey = Constants.stripeSecretKey;
+    final pubKey = Constants.stripePublishableKey;
+
+    // If keys are empty in .env, simulate successful demo payment for video showcase
+    if (secretKey.isEmpty || pubKey.isEmpty) {
+      debugPrint("Demo mode: Keys not found in .env, simulating Stripe Payment Sheet");
       await Future.delayed(const Duration(milliseconds: 800));
       handlePaymentSuccess();
-      return;
+      return true;
     }
 
     try {
       await initStripe();
 
-      // 1. Create a PaymentIntent on Stripe server
+      debugPrint("Stripe Step 1: Creating PaymentIntent for amount: $amount $currency...");
       final clientSecret = await createPaymentIntent(amount, currency);
       if (clientSecret == null) {
-        throw Exception("Failed to create PaymentIntent");
+        throw Exception("Failed to retrieve client_secret from Stripe server");
       }
+      debugPrint("Stripe Step 2: Client Secret created: ${clientSecret.substring(0, clientSecret.length > 12 ? 12 : clientSecret.length)}...");
 
-      // 2. Initialize the payment sheet
+      debugPrint("Stripe Step 3: Initializing PaymentSheet...");
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
-          style: ThemeMode.dark,
-          merchantDisplayName: 'Codex Ahmar - StripeCart',
+          merchantDisplayName: 'StripeCart Luxury Drops',
+          style: ThemeMode.system,
+          appearance: const PaymentSheetAppearance(
+            colors: PaymentSheetAppearanceColors(
+              primary: Color(0xFF6366F1),
+            ),
+          ),
         ),
       );
 
-      // 3. Present the payment sheet
+      debugPrint("Stripe Step 4: Presenting PaymentSheet...");
       await Stripe.instance.presentPaymentSheet();
 
-      // 4. Handle success
+      debugPrint("Stripe Step 5: PaymentSheet completed successfully!");
       handlePaymentSuccess();
-    } catch (e) {
+      return true;
+    } on StripeException catch (e) {
+      debugPrint("StripeException: ${e.error.localizedMessage} (code: ${e.error.code})");
+      if (e.error.code != FailureCode.Canceled) {
+        handlePaymentError(e);
+      } else {
+        debugPrint("Payment was cancelled by the user.");
+      }
+      return false;
+    } catch (e, stackTrace) {
+      debugPrint("Payment Error: $e\n$stackTrace");
       handlePaymentError(e);
+      return false;
     }
   }
 
   /// Create a payment intent and return the client secret
-  Future<String?> createPaymentIntent(int amount, String currency) async {
+  Future<String?> createPaymentIntent(num amount, String currency) async {
     try {
       final Dio dio = Dio();
+      final secretKey = Constants.stripeSecretKey;
 
       final Map<String, dynamic> data = {
         'amount': calculateAmount(amount),
-        'currency': currency,
-        'payment_method_types[]': 'card',
-        'metadata[status]': 'in_test_or_cancelled',
+        'currency': currency.toLowerCase(),
+        'automatic_payment_methods[enabled]': 'true',
       };
 
       final response = await dio.post(
@@ -82,27 +102,27 @@ class StripeService {
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {
-            'Authorization': 'Bearer ${Constants.stripeSecretKey}',
+            'Authorization': 'Bearer $secretKey',
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         ),
       );
 
       if (response.data != null && response.data['client_secret'] != null) {
-        debugPrint('Payment Intent Created: ${response.data}');
-        return response.data['client_secret'];
+        debugPrint('Payment Intent Created: ${response.data['id']}');
+        return response.data['client_secret'] as String;
       }
 
       return null;
     } catch (e) {
-      debugPrint('Error creating PaymentIntent: $e');
+      debugPrint('Error creating PaymentIntent on Stripe: $e');
       return null;
     }
   }
 
-  /// Convert amount to cents
-  String calculateAmount(int amount) {
-    final amountInCents = amount * 100;
+  /// Convert amount in dollars to cents
+  String calculateAmount(num amount) {
+    final amountInCents = (amount * 100).round();
     return amountInCents.toString();
   }
 
@@ -115,19 +135,17 @@ class StripeService {
     );
   }
 
-  /// Handle payment failure or cancellation
+  /// Handle payment failure or error
   void handlePaymentError(dynamic error) {
     if (error is StripeException) {
-      debugPrint("StripeException: ${error.error.localizedMessage}");
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Payment Incomplete',
-        message: error.error.localizedMessage ?? 'Transaction cancelled.',
+        message: error.error.localizedMessage ?? 'Transaction was not completed.',
       );
     } else {
-      debugPrint("Unexpected error: $error");
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Payment Notice',
-        message: 'Could not process transaction. Please try again.',
+        message: 'Could not process transaction. Please verify Stripe keys.',
       );
     }
   }

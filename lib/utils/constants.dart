@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class Constants {
   // Assets images
   static const logo = 'assets/images/app_icon.png';
@@ -33,9 +35,22 @@ class Constants {
 
   static const noData = 'assets/images/no_data.png';
 
-  // Stripe Keys (placeholders for testing)
-  static const String stripePublishableKey = "";
-  static const String stripeSecretKey = "";
+  // Stripe Keys (Reads securely from .env file with fallback)
+  static String get stripePublishableKey {
+    try {
+      return dotenv.env['STRIPE_PUBLISHABLE_KEY']?.trim() ?? "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  static String get stripeSecretKey {
+    try {
+      return dotenv.env['STRIPE_SECRET_KEY']?.trim() ?? "";
+    } catch (_) {
+      return "";
+    }
+  }
 
   // Curated Categories matching mock catalog
   static const List<String> categories = [

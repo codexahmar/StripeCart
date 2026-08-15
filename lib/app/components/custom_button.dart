@@ -23,6 +23,7 @@ class CustomButton extends StatefulWidget {
   final double? width;
   final double? height;
   final double? verticalPadding;
+  final double? horizontalPadding;
   final bool disabled;
   final bool isLoading;
 
@@ -48,6 +49,7 @@ class CustomButton extends StatefulWidget {
     this.width,
     this.height,
     this.verticalPadding,
+    this.horizontalPadding,
     this.disabled = false,
     this.isLoading = false,
   });
@@ -117,7 +119,8 @@ class _CustomButtonState extends State<CustomButton> {
                 : null,
             child: Ink(
               padding: EdgeInsets.symmetric(
-                horizontal: 20.w,
+                horizontal: widget.horizontalPadding ??
+                    (widget.width != null ? 8.w : 20.w),
                 vertical: widget.verticalPadding ?? 14.h,
               ),
               decoration: BoxDecoration(
@@ -150,24 +153,29 @@ class _CustomButtonState extends State<CustomButton> {
                         children: [
                           if (widget.icon != null) ...[
                             widget.icon!,
-                            SizedBox(width: widget.spacing ?? 8.w),
+                            SizedBox(width: widget.spacing ?? 6.w),
                           ],
-                          Text(
-                            widget.text,
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              fontSize: widget.fontSize ?? 15.sp,
-                              fontWeight:
-                                  widget.fontWeight ?? FontWeight.w700,
-                              color: widget.disabled
-                                  ? (isDark
-                                      ? const Color(0xFF64748B)
-                                      : const Color(0xFF94A3B8))
-                                  : (widget.foregroundColor ?? Colors.white),
-                              letterSpacing: 0.3,
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                widget.text,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  fontSize: widget.fontSize ?? 15.sp,
+                                  fontWeight:
+                                      widget.fontWeight ?? FontWeight.w700,
+                                  color: widget.disabled
+                                      ? (isDark
+                                          ? const Color(0xFF64748B)
+                                          : const Color(0xFF94A3B8))
+                                      : (widget.foregroundColor ?? Colors.white),
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
                             ),
                           ),
                           if (widget.trailingIcon != null) ...[
-                            SizedBox(width: widget.spacing ?? 8.w),
+                            SizedBox(width: widget.spacing ?? 6.w),
                             widget.trailingIcon!,
                           ],
                         ],

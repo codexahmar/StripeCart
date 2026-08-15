@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'app/components/custom_snackbar.dart';
 import 'app/data/local/my_shared_pref.dart';
 import 'app/routes/app_pages.dart';
 import 'config/theme/my_theme.dart';
+import 'services/stripe_service.dart';
 
 Future<void> main() async {
   // Wait for flutter bindings
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables from .env
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Info: .env file not found or empty: $e");
+  }
+
+  // Initialize Stripe SDK globally on app startup
+  await StripeService.instance.initStripe();
 
   // Init shared preferences
   await MySharedPref.init();
