@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
@@ -69,8 +68,8 @@ class SettingsView extends GetView<SettingsController> {
               child: Row(
                 children: [
                   Container(
-                    width: 60.r,
-                    height: 60.r,
+                    width: 62.r,
+                    height: 62.r,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
@@ -79,16 +78,19 @@ class SettingsView extends GetView<SettingsController> {
                           const Color(0xFFEC4899),
                         ],
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.primaryColor.withValues(alpha: 0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     padding: const EdgeInsets.all(2.5),
-                    child: CircleAvatar(
-                      backgroundColor: isDark
-                          ? const Color(0xFF141C2E)
-                          : Colors.white,
-                      child: SvgPicture.asset(
-                        Constants.userIcon,
-                        width: 26.r,
-                        color: theme.primaryColor,
+                    child: ClipOval(
+                      child: Image.asset(
+                        Constants.profilePhoto,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

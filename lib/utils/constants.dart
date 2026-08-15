@@ -1,6 +1,7 @@
 class Constants {
   // Assets images
   static const logo = 'assets/images/app_icon.png';
+  static const profilePhoto = 'assets/images/profile_photo.png';
 
   // Vectors / SVGs
   static const homeIcon = 'assets/vectors/home.svg';
@@ -36,17 +37,16 @@ class Constants {
   static const String stripePublishableKey = "";
   static const String stripeSecretKey = "";
 
-  // Categories
+  // Curated Categories matching mock catalog
   static const List<String> categories = [
     'All',
     'Streetwear',
-    'Sneakers',
     'Luxury',
-    'Hoodies',
-    'Accessories',
+    'Tops',
+    'Knitwear',
   ];
 
-  // Default Promo
-  static const String defaultPromoCode = 'INSTA20';
+  // Default Promo Code
+  static const String defaultPromoCode = 'CODEX20';
   static const double defaultPromoDiscount = 0.20; // 20%
 }

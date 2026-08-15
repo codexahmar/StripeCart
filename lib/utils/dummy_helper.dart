@@ -24,9 +24,10 @@ class DummyHelper {
       description:
           'Crafted from 280GSM heavyweight Japanese combed cotton with dropped shoulders and a boxy silhouette. Features custom high-density silicone chest branding and pre-shrunk vintage wash.',
       availableColors: [
-        const Color(0xFF1E293B), // Midnight
+        const Color(0xFF1E293B), // Midnight Noir
         const Color(0xFF6366F1), // Electric Indigo
-        const Color(0xFFE2E8F0), // Off White
+        const Color(0xFFEC4899), // Neon Pink
+        const Color(0xFF06B6D4), // Cyan
       ],
       selectedColor: const Color(0xFF1E293B),
     ),
@@ -51,6 +52,7 @@ class DummyHelper {
         const Color(0xFF0F172A), // Noir
         const Color(0xFFEC4899), // Neon Rose
         const Color(0xFF06B6D4), // Cyan
+        const Color(0xFF8B5CF6), // Violet
       ],
       selectedColor: const Color(0xFF0F172A),
     ),
@@ -59,7 +61,7 @@ class DummyHelper {
       image: Constants.product3,
       name: 'Titan Knit Sweater',
       brand: 'VERVE PARIS',
-      category: 'Hoodies',
+      category: 'Knitwear',
       quantity: 0,
       price: 139.99,
       oldPrice: 189.99,
@@ -75,6 +77,7 @@ class DummyHelper {
         const Color(0xFF334155), // Slate
         const Color(0xFF8B5CF6), // Violet
         const Color(0xFFD97706), // Amber
+        const Color(0xFF10B981), // Emerald
       ],
       selectedColor: const Color(0xFF334155),
     ),
@@ -83,7 +86,7 @@ class DummyHelper {
       image: Constants.product4,
       name: 'Aero Utility Crop Top',
       brand: 'KINETIC NYC',
-      category: 'Streetwear',
+      category: 'Tops',
       quantity: 0,
       price: 54.99,
       oldPrice: 75.00,
@@ -98,6 +101,7 @@ class DummyHelper {
       availableColors: [
         const Color(0xFF1E1B4B), // Deep Iris
         const Color(0xFF10B981), // Emerald
+        const Color(0xFFEC4899), // Neon Pink
         const Color(0xFF64748B), // Steel
       ],
       selectedColor: const Color(0xFF1E1B4B),
@@ -107,7 +111,7 @@ class DummyHelper {
       image: Constants.product5,
       name: 'Veloce Minimal Tank',
       brand: 'AURA STUDIOS',
-      category: 'Accessories',
+      category: 'Tops',
       quantity: 0,
       price: 38.99,
       oldPrice: 49.99,
@@ -121,8 +125,9 @@ class DummyHelper {
           'Minimalist clean-cut ribbed tank constructed with organic bamboo cotton. Naturally moisture-wicking and exceptionally breathable for warm climates.',
       availableColors: [
         const Color(0xFF0F172A),
-        const Color(0xFFF472B6),
-        const Color(0xFFFFFFFF),
+        const Color(0xFFEC4899),
+        const Color(0xFF06B6D4),
+        const Color(0xFF8B5CF6),
       ],
       selectedColor: const Color(0xFF0F172A),
     ),
@@ -131,7 +136,7 @@ class DummyHelper {
       image: Constants.product1,
       name: 'Hyperion Raw Denim',
       brand: 'TOKYO ARCHIVE',
-      category: 'Luxury',
+      category: 'Streetwear',
       quantity: 0,
       price: 119.99,
       oldPrice: 159.99,
@@ -146,6 +151,7 @@ class DummyHelper {
       availableColors: [
         const Color(0xFF1E3A8A), // Raw Indigo
         const Color(0xFF0F172A), // Washed Black
+        const Color(0xFF6366F1), // Indigo
       ],
       selectedColor: const Color(0xFF1E3A8A),
     ),

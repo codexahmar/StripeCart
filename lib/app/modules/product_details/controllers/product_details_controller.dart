@@ -13,6 +13,23 @@ class ProductDetailsController extends GetxController {
   Color? selectedColor;
   int quantity = 1;
 
+  double get sizeScale {
+    switch (selectedSize) {
+      case 'S':
+        return 0.86;
+      case 'M':
+        return 0.95;
+      case 'L':
+        return 1.05;
+      case 'XL':
+        return 1.13;
+      case 'XXL':
+        return 1.20;
+      default:
+        return 0.95;
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -24,23 +41,22 @@ class ProductDetailsController extends GetxController {
   }
 
   void onFavoriteButtonPressed() {
-    product.isFavorite = !(product.isFavorite ?? false);
-    try {
-      Get.find<BaseController>().onFavoriteButtonPressed(productId: product.id!);
-    } catch (_) {}
+    Get.find<BaseController>().onFavoriteButtonPressed(productId: product.id!);
+    var updated = DummyHelper.products.firstWhere((p) => p.id == product.id);
+    product.isFavorite = updated.isFavorite;
     update(['FavoriteButton']);
   }
 
   void changeSelectedSize(String size) {
     if (size == selectedSize) return;
     selectedSize = size;
-    update(['Size']);
+    update(['Size', 'HeroImage']);
   }
 
   void changeSelectedColor(Color color) {
     if (color == selectedColor) return;
     selectedColor = color;
-    update(['Color']);
+    update(['Color', 'HeroContainer']);
   }
 
   void incrementQuantity() {

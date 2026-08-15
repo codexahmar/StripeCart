@@ -123,7 +123,7 @@ class CartView extends GetView<CartController> {
                                         : const Color(0xFF0F172A),
                                   ),
                                   decoration: InputDecoration(
-                                    hintText: 'Promo code (try INSTA20)',
+                                    hintText: 'Promo code (try CODEX20)',
                                     hintStyle: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.normal,

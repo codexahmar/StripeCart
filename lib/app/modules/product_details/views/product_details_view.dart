@@ -29,97 +29,121 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Hero Image Showcase
-                Container(
-                  width: double.infinity,
-                  height: 380.h,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF141C2E)
-                        : const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(36.r),
-                      bottomRight: Radius.circular(36.r),
-                    ),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Ambient glow orb behind product
-                      Container(
-                        width: 200.r,
-                        height: 200.r,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: theme.primaryColor.withValues(
-                            alpha: isDark ? 0.2 : 0.12,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: theme.primaryColor.withValues(
-                                alpha: isDark ? 0.3 : 0.15,
-                              ),
-                              blurRadius: 80,
-                              spreadRadius: 20,
-                            ),
-                          ],
+                // Dynamic Hero Image Showcase reacting to color & size
+                GetBuilder<ProductDetailsController>(
+                  id: 'HeroContainer',
+                  builder: (ctrl) {
+                    final activeColor = ctrl.selectedColor ?? theme.primaryColor;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeOut,
+                      width: double.infinity,
+                      height: 380.h,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark
+                              ? [
+                                  activeColor.withValues(alpha: 0.28),
+                                  const Color(0xFF141C2E),
+                                ]
+                              : [
+                                  activeColor.withValues(alpha: 0.22),
+                                  const Color(0xFFF1F5F9),
+                                ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(36.r),
+                          bottomRight: Radius.circular(36.r),
                         ),
                       ),
-
-                      // Product Hero Image
-                      Hero(
-                        tag: 'product_${product.id}',
-                        child: Image.asset(
-                          product.image!,
-                          height: 280.h,
-                          fit: BoxFit.contain,
-                        ),
-                      ).animate().scale(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeOutCubic,
-                          ),
-
-                      // Discount Tag Floating
-                      if (product.tag != null)
-                        Positioned(
-                          bottom: 20.h,
-                          left: 24.w,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
-                            ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Dynamic glowing orb matching selected color
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 350),
+                            width: 220.r,
+                            height: 220.r,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFFF5376),
-                                  Color(0xFFFF8B3D),
-                                ],
+                              shape: BoxShape.circle,
+                              color: activeColor.withValues(
+                                alpha: isDark ? 0.35 : 0.22,
                               ),
-                              borderRadius: BorderRadius.circular(12.r),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFFF5376).withValues(
-                                    alpha: 0.35,
+                                  color: activeColor.withValues(
+                                    alpha: isDark ? 0.45 : 0.25,
                                   ),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
+                                  blurRadius: 90,
+                                  spreadRadius: 25,
                                 ),
                               ],
                             ),
-                            child: Text(
-                              product.tag!,
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.8,
+                          ),
+
+                          // Product Hero Image dynamically scaling with selected size!
+                          GetBuilder<ProductDetailsController>(
+                            id: 'HeroImage',
+                            builder: (scaleCtrl) => AnimatedScale(
+                              scale: scaleCtrl.sizeScale,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOutBack,
+                              child: Hero(
+                                tag: 'product_${product.id}',
+                                child: Image.asset(
+                                  product.image!,
+                                  height: 280.h,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
+
+                          // Discount Tag Floating
+                          if (product.tag != null)
+                            Positioned(
+                              bottom: 20.h,
+                              left: 24.w,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 6.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFFFF5376),
+                                      Color(0xFFFF8B3D),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFFFF5376).withValues(
+                                        alpha: 0.35,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  product.tag!,
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                    letterSpacing: 0.8,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
 
                 20.verticalSpace,
@@ -259,14 +283,14 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       Divider(color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0)),
                       16.verticalSpace,
 
-                      // Color Swatches Selector
+                      // Interactive Color Swatches Selector
                       if (product.availableColors != null &&
                           product.availableColors!.isNotEmpty) ...[
                         Text(
-                          'SELECT COLOR',
+                          'SELECT COLOR (TAP TO PREVIEW TINT)',
                           style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 11.5.sp,
+                            fontWeight: FontWeight.w800,
                             letterSpacing: 1.0,
                             color: isDark
                                 ? const Color(0xFF94A3B8)
@@ -283,17 +307,27 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                               return GestureDetector(
                                 onTap: () =>
                                     controller.changeSelectedColor(color),
-                                child: Container(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
                                   margin: EdgeInsets.only(right: 12.w),
                                   padding: const EdgeInsets.all(3),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: isSelected
-                                          ? theme.primaryColor
+                                          ? color
                                           : Colors.transparent,
-                                      width: 2,
+                                      width: 2.2,
                                     ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: color.withValues(alpha: 0.4),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ]
+                                        : null,
                                   ),
                                   child: Container(
                                     width: 32.r,
@@ -302,7 +336,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                                       color: color,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: Colors.white.withValues(alpha: 0.2),
+                                        color: Colors.white.withValues(alpha: 0.3),
                                         width: 1,
                                       ),
                                     ),
@@ -322,12 +356,12 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                         20.verticalSpace,
                       ],
 
-                      // Size Selector
+                      // Interactive Size Selector (Resizes fitting preview!)
                       Text(
-                        'SELECT SIZE',
+                        'SELECT SIZE (RESIZES FITTING PREVIEW)',
                         style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 11.5.sp,
+                          fontWeight: FontWeight.w800,
                           letterSpacing: 1.0,
                           color: isDark
                               ? const Color(0xFF94A3B8)
@@ -444,10 +478,10 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 ),
                 GetBuilder<ProductDetailsController>(
                   id: 'FavoriteButton',
-                  builder: (controller) {
-                    final isFav = controller.product.isFavorite ?? false;
+                  builder: (ctrl) {
+                    final isFav = ctrl.product.isFavorite ?? false;
                     return RoundedButton(
-                      onPressed: controller.onFavoriteButtonPressed,
+                      onPressed: ctrl.onFavoriteButtonPressed,
                       child: SvgPicture.asset(
                         isFav
                             ? Constants.favFilledIcon

@@ -78,7 +78,7 @@ class FavoritesView extends GetView<FavoritesController> {
                           crossAxisCount: 2,
                           crossAxisSpacing: 14.w,
                           mainAxisSpacing: 14.h,
-                          mainAxisExtent: 285.h,
+                          mainAxisExtent: 275.h,
                         ),
                         shrinkWrap: true,
                         primary: false,

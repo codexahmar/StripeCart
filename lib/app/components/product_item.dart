@@ -13,7 +13,13 @@ import 'custom_snackbar.dart';
 
 class ProductItem extends StatelessWidget {
   final ProductModel product;
-  const ProductItem({super.key, required this.product});
+  final double? imageHeight;
+
+  const ProductItem({
+    super.key,
+    required this.product,
+    this.imageHeight,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,7 @@ class ProductItem extends StatelessWidget {
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image Stack Container
@@ -50,8 +57,8 @@ class ProductItem extends StatelessWidget {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 155.h,
-                  margin: EdgeInsets.all(8.r),
+                  height: imageHeight ?? 142.h,
+                  margin: EdgeInsets.all(6.r),
                   decoration: BoxDecoration(
                     color: isDark
                         ? const Color(0xFF1E293B).withValues(alpha: 0.6)
@@ -62,7 +69,7 @@ class ProductItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.r),
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.all(10.r),
+                        padding: EdgeInsets.all(8.r),
                         child: Image.asset(
                           product.image!,
                           fit: BoxFit.contain,
@@ -78,12 +85,12 @@ class ProductItem extends StatelessWidget {
                 // Tag / Discount Badge
                 if (product.discountPercent != null || product.tag != null)
                   Positioned(
-                    top: 16.h,
-                    left: 16.w,
+                    top: 12.h,
+                    left: 12.w,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 4.h,
+                        horizontal: 7.w,
+                        vertical: 3.h,
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -114,8 +121,8 @@ class ProductItem extends StatelessWidget {
 
                 // Favorite Button
                 Positioned(
-                  top: 14.h,
-                  right: 14.w,
+                  top: 12.h,
+                  right: 12.w,
                   child: GetBuilder<BaseController>(
                     id: 'FavoriteButton',
                     builder: (baseController) {
@@ -125,8 +132,8 @@ class ProductItem extends StatelessWidget {
                           productId: product.id!,
                         ),
                         child: Container(
-                          width: 32.r,
-                          height: 32.r,
+                          width: 30.r,
+                          height: 30.r,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: isDark
@@ -145,8 +152,8 @@ class ProductItem extends StatelessWidget {
                               isFav
                                   ? Constants.favFilledIcon
                                   : Constants.favOutlinedIcon,
-                              width: 14.r,
-                              height: 14.r,
+                              width: 13.r,
+                              height: 13.r,
                               color: isFav
                                   ? const Color(0xFFFF5376)
                                   : (isDark
@@ -164,7 +171,7 @@ class ProductItem extends StatelessWidget {
 
             // Product Information
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -173,27 +180,27 @@ class ProductItem extends StatelessWidget {
                     Text(
                       product.brand!.toUpperCase(),
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 9.sp,
                         fontWeight: FontWeight.w700,
                         color: theme.primaryColor,
                         letterSpacing: 0.8,
                       ),
                     ),
 
-                  2.verticalSpace,
+                  1.verticalSpace,
 
                   // Product Title
                   Text(
                     product.name ?? '',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
+                      fontSize: 12.5.sp,
                       fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
 
-                  4.verticalSpace,
+                  3.verticalSpace,
 
                   // Rating Row
                   Row(
@@ -201,13 +208,13 @@ class ProductItem extends StatelessWidget {
                       const Icon(
                         Icons.star_rounded,
                         color: Color(0xFFF59E0B),
-                        size: 15,
+                        size: 14,
                       ),
                       3.horizontalSpace,
                       Text(
                         '${product.rating ?? 4.5}',
                         style: TextStyle(
-                          fontSize: 11.sp,
+                          fontSize: 10.5.sp,
                           fontWeight: FontWeight.w700,
                           color: isDark ? Colors.white : const Color(0xFF0F172A),
                         ),
@@ -216,7 +223,7 @@ class ProductItem extends StatelessWidget {
                       Text(
                         '(${product.reviews ?? '1k'})',
                         style: TextStyle(
-                          fontSize: 10.sp,
+                          fontSize: 9.5.sp,
                           color: isDark
                               ? const Color(0xFF64748B)
                               : const Color(0xFF94A3B8),
@@ -225,7 +232,7 @@ class ProductItem extends StatelessWidget {
                     ],
                   ),
 
-                  8.verticalSpace,
+                  6.verticalSpace,
 
                   // Price and Quick Add Row
                   Row(
@@ -238,7 +245,7 @@ class ProductItem extends StatelessWidget {
                             Text(
                               '\$${product.oldPrice!.toStringAsFixed(2)}',
                               style: TextStyle(
-                                fontSize: 11.sp,
+                                fontSize: 10.sp,
                                 color: const Color(0xFF94A3B8),
                                 decoration: TextDecoration.lineThrough,
                               ),
@@ -246,7 +253,7 @@ class ProductItem extends StatelessWidget {
                           Text(
                             '\$${product.price!.toStringAsFixed(2)}',
                             style: theme.textTheme.headlineMedium?.copyWith(
-                              fontSize: 15.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w800,
                               color: isDark
                                   ? Colors.white
@@ -272,8 +279,8 @@ class ProductItem extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          width: 32.r,
-                          height: 32.r,
+                          width: 30.r,
+                          height: 30.r,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -283,7 +290,7 @@ class ProductItem extends StatelessWidget {
                                     : const Color(0xFF4F46E5),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(10.r),
+                            borderRadius: BorderRadius.circular(9.r),
                             boxShadow: [
                               BoxShadow(
                                 color: theme.primaryColor.withValues(alpha: 0.35),
@@ -296,13 +303,14 @@ class ProductItem extends StatelessWidget {
                             child: Icon(
                               Icons.add_rounded,
                               color: Colors.white,
-                              size: 20,
+                              size: 18,
                             ),
                           ),
                         ),
                       ),
                     ],
                   ),
+                  4.verticalSpace,
                 ],
               ),
             ),

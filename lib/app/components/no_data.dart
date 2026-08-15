@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../utils/constants.dart';
 import '../modules/base/controllers/base_controller.dart';
 import 'custom_button.dart';
 
@@ -26,54 +27,41 @@ class NoData extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 40.h),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 30.h),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Image with ambient container glow
             Container(
-              width: 110.r,
-              height: 110.r,
+              width: 220.w,
+              height: 180.h,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: isDark
-                      ? [
-                          theme.primaryColor.withValues(alpha: 0.25),
-                          const Color(0xFF8B5CF6).withValues(alpha: 0.1),
-                        ]
-                      : [
-                          theme.primaryColor.withValues(alpha: 0.15),
-                          const Color(0xFFEC4899).withValues(alpha: 0.05),
-                        ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                border: Border.all(
-                  color: theme.primaryColor.withValues(alpha: 0.3),
-                  width: 1.5,
-                ),
+                borderRadius: BorderRadius.circular(24.r),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 48.r,
-                  color: theme.primaryColor,
-                ),
+              child: Image.asset(
+                Constants.noData,
+                fit: BoxFit.contain,
               ),
-            ).animate().scale(
+            )
+                .animate()
+                .scale(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeOutBack,
-                ),
-            24.verticalSpace,
+                )
+                .fade(duration: const Duration(milliseconds: 400)),
+            18.verticalSpace,
             Text(
               text ?? 'No Items Found',
               style: theme.textTheme.displaySmall?.copyWith(
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 fontSize: 20.sp,
               ),
               textAlign: TextAlign.center,
-            ).animate().fade().slideY(
+            )
+                .animate()
+                .fade()
+                .slideY(
                   begin: 0.2,
                   duration: const Duration(milliseconds: 400),
                 ),
@@ -87,12 +75,15 @@ class NoData extends StatelessWidget {
                 fontSize: 13.sp,
               ),
               textAlign: TextAlign.center,
-            ).animate().fade().slideY(
+            )
+                .animate()
+                .fade()
+                .slideY(
                   begin: 0.2,
                   duration: const Duration(milliseconds: 400),
                   delay: const Duration(milliseconds: 100),
                 ),
-            24.verticalSpace,
+            22.verticalSpace,
             CustomButton(
               text: buttonText ?? 'Explore Catalog',
               width: 190.w,
@@ -104,7 +95,10 @@ class NoData extends StatelessWidget {
                       Get.find<BaseController>().changeScreen(0);
                     } catch (_) {}
                   },
-            ).animate().fade().slideY(
+            )
+                .animate()
+                .fade()
+                .slideY(
                   begin: 0.3,
                   duration: const Duration(milliseconds: 400),
                   delay: const Duration(milliseconds: 200),
