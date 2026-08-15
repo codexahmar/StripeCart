@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import '../../../components/product_item.dart';
 import '../../../components/screen_title.dart';
@@ -17,9 +16,7 @@ class HomeView extends GetView<HomeController> {
         child: ListView(
           children: [
             30.verticalSpace,
-            const ScreenTitle(
-              title: 'Home',
-            ),
+            const ScreenTitle(title: 'Home'),
             20.verticalSpace,
             GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -31,9 +28,9 @@ class HomeView extends GetView<HomeController> {
               shrinkWrap: true,
               primary: false,
               itemCount: controller.products.length,
-              itemBuilder: (context, index) => ProductItem(
-                product: controller.products[index],
-              ),
+              itemBuilder:
+                  (context, index) =>
+                      ProductItem(product: controller.products[index]),
             ),
             10.verticalSpace,
           ],

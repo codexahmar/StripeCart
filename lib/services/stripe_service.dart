@@ -15,7 +15,7 @@ class StripeService {
     Stripe.publishableKey = Constants.stripePublishableKey;
     await Stripe.instance.applySettings();
     _isStripeInitialized = true;
-    print("Stripe initialized");
+    debugPrint("Stripe initialized");
   }
 
   /// Entry point to make a payment

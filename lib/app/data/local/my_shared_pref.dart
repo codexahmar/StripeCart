@@ -26,7 +26,7 @@ class MySharedPref {
 
   /// get if the current theme type is light
   static bool getThemeIsLight() =>
-      _sharedPreferences.getBool(_lightThemeKey) ?? true; // todo set the default theme (true for light, false for dark)
+      _sharedPreferences.getBool(_lightThemeKey) ?? false; // todo set the default theme (true for light, false for dark)
 
   /// save generated fcm token
   static Future<void> setFcmToken(String token) =>

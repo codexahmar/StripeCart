@@ -5,11 +5,8 @@ import 'package:get/get.dart';
 class RoundedButton extends StatelessWidget {
   final void Function()? onPressed;
   final Widget child;
-  const RoundedButton({
-    Key? key,
-    required this.onPressed,
-    required this.child,
-  }) : super(key: key);
+  const RoundedButton({Key? key, required this.onPressed, required this.child})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +24,7 @@ class RoundedButton extends StatelessWidget {
               blurRadius: 4,
               spreadRadius: 0,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: child,

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:get/get.dart';
-
 import '../../../../utils/constants.dart';
 import '../../../components/custom_button.dart';
 import '../controllers/product_details_controller.dart';
@@ -47,25 +45,29 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                           onPressed: () => Get.back(),
                           child: SvgPicture.asset(
                             Constants.backArrowIcon,
-                            fit: BoxFit.none
+                            fit: BoxFit.none,
                           ),
                         ),
                         GetBuilder<ProductDetailsController>(
                           id: 'FavoriteButton',
-                          builder: (_) => RoundedButton(
-                            onPressed: () => controller.onFavoriteButtonPressed(),
-                            child: Align(
-                              child: SvgPicture.asset(
-                                controller.product.isFavorite!
-                                  ? Constants.favFilledIcon
-                                  : Constants.favOutlinedIcon,
-                                width: 16.w,
-                                height: 15.h,
-                                color: controller.product.isFavorite!
-                                  ? null : Colors.white,
+                          builder:
+                              (_) => RoundedButton(
+                                onPressed:
+                                    () => controller.onFavoriteButtonPressed(),
+                                child: Align(
+                                  child: SvgPicture.asset(
+                                    controller.product.isFavorite!
+                                        ? Constants.favFilledIcon
+                                        : Constants.favOutlinedIcon,
+                                    width: 16.w,
+                                    height: 15.h,
+                                    color:
+                                        controller.product.isFavorite!
+                                            ? null
+                                            : Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -112,13 +114,15 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                       controller.product.rating!.toString(),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 18.sp,
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     5.horizontalSpace,
                     Text(
                       '(${controller.product.reviews!})',
-                      style: theme.textTheme.bodyMedium?.copyWith(fontSize: 16.sp),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 16.sp,
+                      ),
                     ),
                   ],
                 ).animate().fade().slideX(
@@ -134,7 +138,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                   'Choose your size:',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontSize: 18.sp,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ).animate().fade().slideX(
                   duration: const Duration(milliseconds: 300),
@@ -147,38 +151,40 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: GetBuilder<ProductDetailsController>(
                   id: 'Size',
-                  builder: (_) => Row(
-                    children: [
-                      SizeItem(
-                        onPressed: () => controller.changeSelectedSize('S'),
-                        label: 'S',
-                        selected: controller.selectedSize == 'S',
+                  builder:
+                      (_) => Row(
+                        children: [
+                          SizeItem(
+                            onPressed: () => controller.changeSelectedSize('S'),
+                            label: 'S',
+                            selected: controller.selectedSize == 'S',
+                          ),
+                          10.horizontalSpace,
+                          SizeItem(
+                            onPressed: () => controller.changeSelectedSize('M'),
+                            label: 'M',
+                            selected: controller.selectedSize == 'M',
+                          ),
+                          10.horizontalSpace,
+                          SizeItem(
+                            onPressed: () => controller.changeSelectedSize('L'),
+                            label: 'L',
+                            selected: controller.selectedSize == 'L',
+                          ),
+                          10.horizontalSpace,
+                          SizeItem(
+                            onPressed:
+                                () => controller.changeSelectedSize('XL'),
+                            label: 'XL',
+                            selected: controller.selectedSize == 'XL',
+                          ),
+                        ],
+                      ).animate().fade().slideX(
+                        duration: const Duration(milliseconds: 300),
+                        begin: -1,
+                        curve: Curves.easeInSine,
                       ),
-                      10.horizontalSpace,
-                      SizeItem(
-                        onPressed: () => controller.changeSelectedSize('M'),
-                        label: 'M',
-                        selected: controller.selectedSize == 'M',
-                      ),
-                      10.horizontalSpace,
-                      SizeItem(
-                        onPressed: () => controller.changeSelectedSize('L'),
-                        label: 'L',
-                        selected: controller.selectedSize == 'L',
-                      ),
-                      10.horizontalSpace,
-                      SizeItem(
-                        onPressed: () => controller.changeSelectedSize('XL'),
-                        label: 'XL',
-                        selected: controller.selectedSize == 'XL',
-                      ),
-                    ],
-                  ).animate().fade().slideX(
-                    duration: const Duration(milliseconds: 300),
-                    begin: -1,
-                    curve: Curves.easeInSine,
-                  ),
-                ),              
+                ),
               ),
               20.verticalSpace,
               Padding(

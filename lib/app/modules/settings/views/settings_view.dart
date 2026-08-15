@@ -31,7 +31,7 @@ class SettingsView extends GetView<SettingsController> {
             ),
             20.verticalSpace,
             const SettingsItem(
-              title: 'Ahmaryar Khan',
+              title: 'Codex Ahmar',
               icon: Constants.userIcon,
               isAccount: true,
             ),

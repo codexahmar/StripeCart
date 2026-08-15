@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
 import '../../../../utils/constants.dart';
 import '../controllers/base_controller.dart';
 import '../../cart/views/cart_view.dart';
@@ -18,77 +17,72 @@ class BaseView extends GetView<BaseController> {
   Widget build(BuildContext context) {
     var theme = context.theme;
     return GetBuilder<BaseController>(
-      builder: (_) => Scaffold(
-        extendBody: true,
-        body: SafeArea(
-          bottom: false,
-          child: IndexedStack(
-            index: controller.currentIndex,
-            children: const [
-              HomeView(),
-              FavoritesView(),
-              CartView(),
-              NotificationsView(),
-              SettingsView()
-            ],
-          ),
-        ),
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25.r),
-              topRight: Radius.circular(25.r),
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black38,
-                spreadRadius: 0,
-                blurRadius: 10,
+      builder:
+          (_) => Scaffold(
+            extendBody: true,
+            body: SafeArea(
+              bottom: false,
+              child: IndexedStack(
+                index: controller.currentIndex,
+                children: const [
+                  HomeView(),
+                  FavoritesView(),
+                  CartView(),
+                  NotificationsView(),
+                  SettingsView(),
+                ],
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25.r),
-              topRight: Radius.circular(25.r),
             ),
-            child: BottomNavigationBar(
-              currentIndex: controller.currentIndex,
-              type: BottomNavigationBarType.fixed,
-              elevation: 0.0,
-              backgroundColor: theme.scaffoldBackgroundColor,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              selectedFontSize: 0.0,
-              items: [
-                _mBottomNavItem(
-                  label: 'Home',
-                  icon: Constants.homeIcon,
+            bottomNavigationBar: Container(
+              padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25.r),
+                  topRight: Radius.circular(25.r),
                 ),
-                _mBottomNavItem(
-                  label: 'Favorites',
-                  icon: Constants.favoritesIcon,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black38,
+                    spreadRadius: 0,
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25.r),
+                  topRight: Radius.circular(25.r),
                 ),
-                _mBottomNavItem(
-                  label: 'Cart',
-                  icon: Constants.cartIcon,
+                child: BottomNavigationBar(
+                  currentIndex: controller.currentIndex,
+                  type: BottomNavigationBarType.fixed,
+                  elevation: 0.0,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  selectedFontSize: 0.0,
+                  items: [
+                    _mBottomNavItem(label: 'Home', icon: Constants.homeIcon),
+                    _mBottomNavItem(
+                      label: 'Favorites',
+                      icon: Constants.favoritesIcon,
+                    ),
+                    _mBottomNavItem(label: 'Cart', icon: Constants.cartIcon),
+                    _mBottomNavItem(
+                      label: 'Notifications',
+                      icon: Constants.notificationsIcon,
+                    ),
+                    _mBottomNavItem(
+                      label: 'Settings',
+                      icon: Constants.settingsIcon,
+                    ),
+                  ],
+                  onTap: controller.changeScreen,
                 ),
-                _mBottomNavItem(
-                  label: 'Notifications',
-                  icon: Constants.notificationsIcon,
-                ),
-                _mBottomNavItem(
-                  label: 'Settings',
-                  icon: Constants.settingsIcon,
-                ),
-              ],
-              onTap: controller.changeScreen,
+              ),
             ),
           ),
-        ),
-      ),
     );
   }
 

@@ -24,14 +24,17 @@ class SizeItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? theme.primaryColor : theme.colorScheme.background,
           borderRadius: BorderRadius.circular(12.r),
-          boxShadow: !selected ? null : [
-            BoxShadow(
-              color: const Color(0xFF0FDA89).withOpacity(0.3),
-              blurRadius: 4,
-              spreadRadius: 0,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow:
+              !selected
+                  ? null
+                  : [
+                    BoxShadow(
+                      color: const Color(0xFF0FDA89).withOpacity(0.3),
+                      blurRadius: 4,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
         ),
         child: Center(
           child: Text(
@@ -39,7 +42,7 @@ class SizeItem extends StatelessWidget {
             style: theme.textTheme.displaySmall?.copyWith(
               fontSize: 12.sp,
               fontWeight: FontWeight.bold,
-              color: selected ? Colors.white : null
+              color: selected ? Colors.white : null,
             ),
           ),
         ),

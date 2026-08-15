@@ -31,7 +31,10 @@ class SettingsItem extends StatelessWidget {
       subtitle:
           !isAccount
               ? null
-              : Text('+923449058189', style: theme.textTheme.displaySmall),
+              : Text(
+                'codexahmar@gmail.com',
+                style: theme.textTheme.displaySmall,
+              ),
       leading: CircleAvatar(
         radius: isAccount ? 30.r : 25.r,
         backgroundColor: theme.primaryColor,

@@ -1,12 +1,10 @@
 import 'package:get/get.dart';
-
 import '../../../../utils/dummy_helper.dart';
 import '../../../data/models/product_model.dart';
 import '../../base/controllers/base_controller.dart';
 import '../../cart/controllers/cart_controller.dart';
 
 class ProductDetailsController extends GetxController {
-
   // get product details from arguments
   ProductModel product = Get.arguments;
 
@@ -34,5 +32,4 @@ class ProductDetailsController extends GetxController {
     selectedSize = size;
     update(['Size']);
   }
-
 }
